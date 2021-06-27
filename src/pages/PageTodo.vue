@@ -1,52 +1,42 @@
 <template>
   <q-page padding>
-    <q-list bordered padding separator>
-      <q-item
-        @click="completed = !completed"
-        tag="label"
-        v-ripple
-        v-for="task in tasks"
-        :key="task.id"
-        clickable
-        :class="task.completed ? 'bg-green-1' : 'bg-orange-1'"
-      >
-        <q-item-section side top>
-          <q-checkbox v-model="task.completed" />
-        </q-item-section>
-
-        <q-item-section>
-          <q-item-label :class="{ 'text-strikethrough': task.completed }">{{
-            task.name
-          }}</q-item-label>
-        </q-item-section>
-        <q-item-section side top>
-          <div class="row">
-            <div class="column justify-center">
-              <q-icon name="event" size="18px" class="q-mr-xs" />
-            </div>
-            <div class="column">
-              <q-item-label caption class="row justify-end">{{
-                task.dueDate
-              }}</q-item-label>
-              <q-item-label caption class="row justify-end">{{
-                task.dueTime
-              }}</q-item-label>
-            </div>
-          </div>
-        </q-item-section>
-      </q-item>
+    <q-list bordered padding separator v-if="Object.keys(tasks).length">
+      <task v-for="(task, key) in tasks" :key="key" :task="task" :id="key">
+      </task>
     </q-list>
+    <div
+      class="absolute-bottom text-center q-mb-lg"
+      @click="showAddTask = true"
+    >
+      <q-btn size="24px" round color="primary" icon="add" />
+    </div>
+    <q-dialog v-model="showAddTask">
+      <add-task @close="showAddTask = !showAddTask" />
+    </q-dialog>
   </q-page>
 </template>
 
 <script>
+import Task from "components/Tasks/Task.vue";
 import { mapGetters } from "vuex";
+import AddTask from "src/components/Modals/AddTask.vue";
 export default {
+  data() {
+    return {
+      showAddTask: false,
+    };
+  },
   computed: {
-    // ...mapGetters("tasks", ["tasks"]),
+    ...mapGetters("tasks", ["tasks"]),
     // tasks() {
     //   return this.$store.getters["tasks/tasks"];
     // },
   },
+  components: {
+    Task,
+    AddTask,
+  },
+  Task,
 };
 </script>
+  
