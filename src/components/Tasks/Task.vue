@@ -7,7 +7,7 @@
     :class="task.completed ? 'bg-green-1' : 'bg-orange-1'"
   >
     <q-item-section side top>
-      <q-checkbox :value="task.completed" class="no-pointer-events" />
+      <q-checkbox v-model="task.completed" class="no-pointer-events" />
     </q-item-section>
 
     <q-item-section>
@@ -31,24 +31,46 @@
       </div>
     </q-item-section>
     <q-item-section side top>
-      <q-btn
-        flat
-        round
-        dense
-        color="red"
-        icon="delete"
-        @click.stop="promtToDelete(id)"
-      />
+      <div class="row">
+        <q-btn
+          flat
+          round
+          dense
+          color="primary"
+          icon="edit"
+          @click.stop="showEditTask = true"
+        />
+        <q-btn
+          flat
+          round
+          dense
+          color="red"
+          icon="delete"
+          @click.stop="promtToDelete(id)"
+        />
+      </div>
     </q-item-section>
+    <q-dialog v-model="showEditTask">
+      <edit-task @close="showEditTask = false" :task="task" :id="id" />
+    </q-dialog>
   </q-item>
 </template>
 
 <script>
 import { mapActions } from "vuex";
+import EditTask from "./Modals/EditTask.vue";
+
 export default {
+  components: { EditTask },
   props: ["task", "id"],
+  data() {
+    return {
+      showEditTask: false,
+    };
+  },
   methods: {
     ...mapActions("tasks", ["updateTask", "deleteTask"]),
+
     promtToDelete(id) {
       this.$q
         .dialog({

@@ -3,24 +3,24 @@ import Vue from "vue";
 
 const state = {
   tasks: {
-    // ID1: {
-    //   name: "Go to shop",
-    //   completed: false,
-    //   dueDate: "2021/06/25",
-    //   dueTime: "12:36",
-    // },
-    // ID2: {
-    //   name: "Go gym",
-    //   completed: false,
-    //   dueDate: "2021/06/25",
-    //   dueTime: "12:36",
-    // },
-    // ID3: {
-    //   name: "Get banana",
-    //   completed: false,
-    //   dueDate: "2021/06/25",
-    //   dueTime: "12:36",
-    // },
+    ID1: {
+      name: "Go to shop",
+      completed: false,
+      dueDate: "2021/06/25",
+      dueTime: "12:36",
+    },
+    ID2: {
+      name: "Go gym",
+      completed: false,
+      dueDate: "2021/06/25",
+      dueTime: "12:36",
+    },
+    ID3: {
+      name: "Get banana",
+      completed: false,
+      dueDate: "2021/06/25",
+      dueTime: "12:36",
+    },
   },
 };
 const mutations = {
@@ -57,8 +57,25 @@ const actions = {
 };
 
 const getters = {
-  tasks: (state) => {
-    return state.tasks;
+  tasksTodo: (state) => {
+    let tasks = {};
+    Object.keys(state.tasks).forEach(function (key) {
+      let task = state.tasks[key];
+      if (!task.completed) {
+        tasks[key] = task;
+      }
+    });
+    return tasks;
+  },
+  tasksCompleted: (state) => {
+    let tasks = {};
+    Object.keys(state.tasks).forEach(function (key) {
+      let task = state.tasks[key];
+      if (task.completed) {
+        tasks[key] = task;
+      }
+    });
+    return tasks;
   },
 };
 

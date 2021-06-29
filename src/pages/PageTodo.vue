@@ -1,9 +1,16 @@
 <template>
-  <q-page padding>
-    <q-list bordered padding separator v-if="Object.keys(tasks).length">
-      <task v-for="(task, key) in tasks" :key="key" :task="task" :id="key">
-      </task>
-    </q-list>
+  <q-page padding class="q-pa-md">
+    <no-task
+      v-if="!Object.keys(tasksTodo).length"
+      @showAddTask="showAddTask = true"
+    />
+    <task-todo v-else :tasksTodo="tasksTodo" />
+
+    <tasks-completed
+      :tasksCompleted="tasksCompleted"
+      v-if="Object.keys(tasksCompleted).length"
+    />
+
     <div
       class="absolute-bottom text-center q-mb-lg"
       @click="showAddTask = true"
@@ -17,9 +24,13 @@
 </template>
 
 <script>
-import Task from "components/Tasks/Task.vue";
 import { mapGetters } from "vuex";
-import AddTask from "src/components/Modals/AddTask.vue";
+
+import TaskTodo from "src/components/Tasks/TaskTodo.vue";
+import TasksCompleted from "src/components/Tasks/TasksCompleted.vue";
+import AddTask from "src/components/Tasks/Modals/AddTask.vue";
+import NoTask from "src/components/Tasks/NoTask.vue";
+
 export default {
   data() {
     return {
@@ -27,16 +38,17 @@ export default {
     };
   },
   computed: {
-    ...mapGetters("tasks", ["tasks"]),
+    ...mapGetters("tasks", ["tasksTodo", "tasksCompleted"]),
     // tasks() {
     //   return this.$store.getters["tasks/tasks"];
     // },
   },
   components: {
-    Task,
+    TaskTodo,
+    TasksCompleted,
     AddTask,
+    NoTask,
   },
-  Task,
 };
 </script>
   
