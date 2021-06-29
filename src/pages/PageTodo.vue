@@ -1,10 +1,22 @@
 <template>
   <q-page padding class="q-pa-md">
+    <div class="row q-mb-lg">
+      <search />
+    </div>
+    <p
+      v-if="
+        search &&
+        !Object.keys(tasksTodo).length &&
+        !Object.keys(tasksCompleted).length
+      "
+    >
+      No Search Result.
+    </p>
     <no-task
-      v-if="!Object.keys(tasksTodo).length"
+      v-if="!Object.keys(tasksTodo).length && !search"
       @showAddTask="showAddTask = true"
     />
-    <task-todo v-else :tasksTodo="tasksTodo" />
+    <task-todo v-if="Object.keys(tasksTodo).length" :tasksTodo="tasksTodo" />
 
     <tasks-completed
       :tasksCompleted="tasksCompleted"
@@ -24,12 +36,13 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import { mapGetters, mapState } from "vuex";
 
 import TaskTodo from "src/components/Tasks/TaskTodo.vue";
 import TasksCompleted from "src/components/Tasks/TasksCompleted.vue";
 import AddTask from "src/components/Tasks/Modals/AddTask.vue";
 import NoTask from "src/components/Tasks/NoTask.vue";
+import Search from "src/components/Tasks/Tools/Search.vue";
 
 export default {
   data() {
@@ -39,6 +52,7 @@ export default {
   },
   computed: {
     ...mapGetters("tasks", ["tasksTodo", "tasksCompleted"]),
+    ...mapState("tasks", ["search"]),
     // tasks() {
     //   return this.$store.getters["tasks/tasks"];
     // },
@@ -48,6 +62,7 @@ export default {
     TasksCompleted,
     AddTask,
     NoTask,
+    Search,
   },
 };
 </script>
