@@ -5,15 +5,17 @@
     v-ripple
     clickable
     :class="task.completed ? 'bg-green-1' : 'bg-orange-1'"
+    v-touch-hold:1000.mouse="showEditTaskModal"
   >
     <q-item-section side top>
       <q-checkbox v-model="task.completed" class="no-pointer-events" />
     </q-item-section>
 
     <q-item-section>
-      <q-item-label :class="{ 'text-strikethrough': task.completed }">{{
-        task.name
-      }}</q-item-label>
+      <q-item-label
+        :class="{ 'text-strikethrough': task.completed }"
+        v-html="$options.computed.searchHeighLight(task.name, search)"
+      ></q-item-label>
     </q-item-section>
     <q-item-section side top>
       <div class="row">
@@ -21,9 +23,11 @@
           <q-icon name="event" size="18px" class="q-mr-xs" />
         </div>
         <div class="column">
-          <q-item-label caption class="row justify-end">{{
-            task.dueDate
-          }}</q-item-label>
+          <q-item-label
+            caption
+            class="row justify-end"
+            v-html="$options.computed.niceDate(task.dueDate)"
+          ></q-item-label>
           <q-item-label caption class="row justify-end">{{
             task.dueTime
           }}</q-item-label>
@@ -57,16 +61,35 @@
 </template>
 
 <script>
-import { mapActions } from "vuex";
+import { mapActions, mapState } from "vuex";
 import EditTask from "./Modals/EditTask.vue";
+import { date } from "quasar";
 
 export default {
   components: { EditTask },
+
   props: ["task", "id"],
   data() {
     return {
       showEditTask: false,
     };
+  },
+  computed: {
+    ...mapState("tasks", ["search"]),
+    niceDate(value) {
+      const { formatDate } = date;
+      return formatDate(value, "MMM D");
+    },
+    searchHeighLight(value, search) {
+      if (search) {
+        let searchRegExp = new RegExp(search, "ig");
+        return value.replace(searchRegExp, (match) => {
+          return "<span class='bg-yellow-6'>" + match + "</span>";
+        });
+      }
+      return value;
+      console.log(search);
+    },
   },
   methods: {
     ...mapActions("tasks", ["updateTask", "deleteTask"]),
@@ -84,6 +107,9 @@ export default {
         .onOk(() => {
           this.deleteTask(id);
         });
+    },
+    showEditTaskModal() {
+      this.showEditTask = true;
     },
   },
 };

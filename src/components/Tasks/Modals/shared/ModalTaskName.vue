@@ -1,8 +1,8 @@
 <template>
   <div class="row q-mb-sm">
-    {{ name }}
     <q-input
       :rules="[(val) => !!val || 'Field is required']"
+      v-select-all
       :modelValue="name"
       @update:modelValue="(event) => $emit('update:name', event)"
       outlined
@@ -16,6 +16,7 @@
 </template>
 
 <script>
+import { selectAll } from "src/directives/directive-select-all";
 export default {
   props: ["name"],
 
@@ -27,6 +28,9 @@ export default {
     //   console.log(event);
     //   this.$emit("update", event);
     // },
+  },
+  directives: {
+    selectAll,
   },
 };
 </script>

@@ -6,23 +6,60 @@ const state = {
     ID1: {
       name: "Go to shop",
       completed: false,
-      dueDate: "2021/06/25",
-      dueTime: "12:36",
+      dueDate: "2021/06/10",
+      dueTime: "10:36",
     },
     ID2: {
       name: "Go gym",
       completed: false,
-      dueDate: "2021/06/25",
-      dueTime: "12:36",
+      dueDate: "2021/08/25",
+      dueTime: "1:02",
     },
     ID3: {
       name: "Get banana",
       completed: false,
-      dueDate: "2021/06/25",
-      dueTime: "12:36",
+      dueDate: "2021/09/25",
+      dueTime: "18:35",
+    },
+    ID4: {
+      name: "Go to shop",
+      completed: false,
+      dueDate: "2021/06/10",
+      dueTime: "10:36",
+    },
+    ID5: {
+      name: "Go gym",
+      completed: false,
+      dueDate: "2021/08/25",
+      dueTime: "1:02",
+    },
+    ID6: {
+      name: "Get banana",
+      completed: false,
+      dueDate: "2021/09/25",
+      dueTime: "18:35",
+    },
+    ID7: {
+      name: "Go to shop",
+      completed: false,
+      dueDate: "2021/06/10",
+      dueTime: "10:36",
+    },
+    ID8: {
+      name: "Go gym",
+      completed: false,
+      dueDate: "2021/08/25",
+      dueTime: "1:02",
+    },
+    ID9: {
+      name: "Get banana",
+      completed: false,
+      dueDate: "2021/09/25",
+      dueTime: "18:35",
     },
   },
   search: "",
+  sort: "name",
 };
 const mutations = {
   updateTask(state, payload) {
@@ -40,6 +77,9 @@ const mutations = {
   },
   setSearch(state, value) {
     state.search = value;
+  },
+  setSort(state, value) {
+    state.sort = value;
   },
 };
 const actions = {
@@ -61,14 +101,38 @@ const actions = {
   setSearch({ commit }, value) {
     commit("setSearch", value);
   },
+  setSort({ commit }, value) {
+    commit("setSort", value);
+  },
 };
 
 const getters = {
-  tasksFiltered: (state) => {
+  tasksSorted: (state) => {
+    let tasksSorted = {},
+      keysOrdered = Object.keys(state.tasks);
+    // console.log(keysOrdered, "from sorted");
+    keysOrdered.sort((a, b) => {
+      console.log(state.sort, "sss");
+      let taskAprop = state.tasks[a][state.sort].toLowerCase(),
+        taskBprop = state.tasks[b][state.sort].toLowerCase();
+      if (taskAprop > taskBprop) return 1;
+      else if (taskAprop < taskBprop) return -1;
+      else return 0;
+    });
+    // console.log("keysOrdered", keysOrdered);
+    keysOrdered.forEach((key) => {
+      tasksSorted[key] = state.tasks[key];
+    });
+    console.log(tasksSorted, "taskSorted");
+    return tasksSorted;
+  },
+
+  tasksFiltered: (state, getters) => {
+    let tasksSorted = getters.tasksSorted;
     let tasksFiltered = {};
     if (state.search) {
-      Object.keys(state.tasks).forEach(function (key) {
-        let task = state.tasks[key],
+      Object.keys(tasksSorted).forEach(function (key) {
+        let task = tasksSorted[key],
           taskNameLowerCase = task.name.toLowerCase(),
           searchLowerCase = state.search.toLowerCase();
         if (taskNameLowerCase.includes(searchLowerCase)) {
@@ -77,7 +141,7 @@ const getters = {
       });
       return tasksFiltered;
     }
-    return state.tasks;
+    return tasksSorted;
   },
   tasksTodo: (state, getters) => {
     let tasksFiltered = getters.tasksFiltered;
