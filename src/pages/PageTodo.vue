@@ -17,7 +17,11 @@
 
       <q-scroll-area class="q-scroll-area-tasks">
         <no-task
-          v-if="!Object.keys(tasksTodo).length && !search"
+          v-if="
+            !Object.keys(tasksTodo).length &&
+            !search &&
+            !settings.showTaskInOneList
+          "
           @showAddTask="showAddTask = true"
         />
         <task-todo
@@ -77,6 +81,8 @@ export default {
     // tasks() {
     //   return this.$store.getters["tasks/tasks"];
     // },
+
+    ...mapGetters("settings", ["settings"]),
   },
   components: {
     TaskTodo,

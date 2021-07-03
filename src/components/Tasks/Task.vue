@@ -29,7 +29,7 @@
             v-html="$options.computed.niceDate(task.dueDate)"
           ></q-item-label>
           <q-item-label caption class="row justify-end">{{
-            task.dueTime
+            taskDueTime
           }}</q-item-label>
         </div>
       </div>
@@ -61,7 +61,7 @@
 </template>
 
 <script>
-import { mapActions, mapState } from "vuex";
+import { mapActions, mapGetters, mapState } from "vuex";
 import EditTask from "./Modals/EditTask.vue";
 import { date } from "quasar";
 
@@ -76,6 +76,16 @@ export default {
   },
   computed: {
     ...mapState("tasks", ["search"]),
+    ...mapGetters("settings", ["settings"]),
+    taskDueTime() {
+      if (this.settings.show12HourTimeFormat) {
+        return date.formatDate(
+          this.task.dueDate + " " + this.task.dueTime,
+          "h:mmA"
+        );
+      }
+      return this.task.dueTime;
+    },
     niceDate(value) {
       const { formatDate } = date;
       return formatDate(value, "MMM D");

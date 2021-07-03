@@ -117,7 +117,7 @@ module.exports = configure(function (ctx) {
       directives: ["Ripple", "ClosePopup"],
 
       // Quasar plugins
-      plugins: ["Notify", "Dialog"],
+      plugins: ["Notify", "Dialog", "LocalStorage", "SessionStorage"],
     },
 
     // animations: 'all', // --- includes all animations

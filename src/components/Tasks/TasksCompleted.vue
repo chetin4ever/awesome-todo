@@ -4,8 +4,13 @@
     enter-active-class="animated zoomIn"
     leave-active-class="animated zoomOutUp absolute-top"
   >
-    <div class="q-mt-lg">
-      <list-header bgcolor="bg-green" class="q-mt-lg">Completed</list-header>
+    <div :class="{ 'q-mt-lg': !settings.showTaskInOneList }">
+      <list-header
+        v-if="!settings.showTaskInOneList"
+        bgcolor="bg-green"
+        class="q-mt-lg"
+        >Completed</list-header
+      >
       <q-list
         bordered
         padding
@@ -27,10 +32,14 @@
 <script>
 import ListHeader from "../shared/ListHeader.vue";
 import Task from "./Task.vue";
+import { mapGetters } from "vuex";
 
 export default {
   components: { Task, ListHeader },
   props: ["tasksCompleted", "bgColor"],
+  computed: {
+    ...mapGetters("settings", ["settings"]),
+  },
 };
 </script>
 
