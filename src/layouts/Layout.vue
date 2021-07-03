@@ -5,6 +5,13 @@
         <q-toolbar-title class="absolute-center">
           Awesome Todo
         </q-toolbar-title>
+        <q-btn
+          icon-right="account_circle"
+          label="Login"
+          class="absolute-right"
+          flat
+          to="/auth "
+        />
       </q-toolbar>
     </q-header>
 
