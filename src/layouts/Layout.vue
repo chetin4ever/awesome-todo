@@ -6,11 +6,20 @@
           Awesome Todo
         </q-toolbar-title>
         <q-btn
+          v-if="!loggedIn"
           icon-right="account_circle"
           label="Login"
           class="absolute-right"
           flat
           to="/auth "
+        />
+        <q-btn
+          v-else
+          @click="logoutUser"
+          icon-right="account_circle"
+          label="Logout"
+          class="absolute-right"
+          flat
         />
       </q-toolbar>
     </q-header>
@@ -63,6 +72,7 @@
 
 <script>
 import { defineComponent, ref } from "vue";
+import { mapActions, mapState } from "vuex";
 
 export default defineComponent({
   name: "MainLayout",
@@ -84,6 +94,12 @@ export default defineComponent({
         },
       ],
     };
+  },
+  methods: {
+    ...mapActions("auth", ["logoutUser"]),
+  },
+  computed: {
+    ...mapState("auth", ["loggedIn"]),
   },
 });
 </script>

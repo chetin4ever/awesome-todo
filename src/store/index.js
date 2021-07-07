@@ -3,6 +3,7 @@ import { createStore } from "vuex";
 
 import tasks from "./store-task";
 import settings from "./store-settings";
+import auth from "./store-auth";
 
 /*
  * If not building with SSR mode, you can
@@ -18,6 +19,7 @@ export default store(function (/* { ssrContext } */) {
     modules: {
       tasks,
       settings,
+      auth,
     },
 
     // enable strict mode (adds overhead!)
