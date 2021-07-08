@@ -109,6 +109,9 @@ export default {
         .dialog({
           title: "Confirm",
           message: "Really delete?",
+          ok: {
+            push: true,
+          },
           cancel: {
             color: "negative",
           },

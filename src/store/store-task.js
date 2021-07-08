@@ -1,65 +1,43 @@
 import { uid } from "quasar";
+import { firebaseDb, firebaseAuth } from "boot/firebase";
 import Vue from "vue";
 
 const state = {
   tasks: {
-    ID1: {
-      name: "Go to shop",
-      completed: false,
-      dueDate: "2021/06/10",
-      dueTime: "10:36",
-    },
-    ID2: {
-      name: "Go gym",
-      completed: false,
-      dueDate: "2021/08/25",
-      dueTime: "1:02",
-    },
-    ID3: {
-      name: "Get banana",
-      completed: false,
-      dueDate: "2021/09/25",
-      dueTime: "18:35",
-    },
-    ID4: {
-      name: "Go to shop",
-      completed: false,
-      dueDate: "2021/06/10",
-      dueTime: "10:36",
-    },
-    ID5: {
-      name: "Go gym",
-      completed: false,
-      dueDate: "2021/08/25",
-      dueTime: "1:02",
-    },
-    ID6: {
-      name: "Get banana",
-      completed: false,
-      dueDate: "2021/09/25",
-      dueTime: "18:35",
-    },
-    ID7: {
-      name: "Go to shop",
-      completed: false,
-      dueDate: "2021/06/10",
-      dueTime: "10:36",
-    },
-    ID8: {
-      name: "Go gym",
-      completed: false,
-      dueDate: "2021/08/25",
-      dueTime: "1:02",
-    },
-    ID9: {
-      name: "Get banana",
-      completed: false,
-      dueDate: "2021/09/25",
-      dueTime: "18:35",
-    },
+    // ID1: {
+    //   name: "Go to shop",
+    //   completed: false,
+    //   dueDate: "2021/06/10",
+    //   dueTime: "10:36",
+    // },
+    // ID2: {
+    //   name: "Go gym",
+    //   completed: false,
+    //   dueDate: "2021/08/25",
+    //   dueTime: "1:02",
+    // },
+    // ID3: {
+    //   name: "Get banana",
+    //   completed: false,
+    //   dueDate: "2021/09/25",
+    //   dueTime: "18:35",
+    // },
+    // ID4: {
+    //   name: "Go to shop",
+    //   completed: false,
+    //   dueDate: "2021/06/10",
+    //   dueTime: "10:36",
+    // },
+    // ID5: {
+    //   name: "Go gym",
+    //   completed: false,
+    //   dueDate: "2021/08/25",
+    //   dueTime: "1:02",
+    // },
   },
   search: "",
   sort: "name",
+  taskDownloaded: false,
 };
 const mutations = {
   updateTask(state, payload) {
@@ -81,28 +59,86 @@ const mutations = {
   setSort(state, value) {
     state.sort = value;
   },
+  setTaskDownloaded(state, value) {
+    state.taskDownloaded = value;
+  },
 };
 const actions = {
-  updateTask({ commit }, payload) {
-    commit("updateTask", payload);
+  updateTask({ dispatch }, payload) {
+    dispatch("fbUpdateTask", payload);
   },
-  deleteTask({ commit }, id) {
-    commit("deleteTask", id);
+  deleteTask({ dispatch }, id) {
+    dispatch("fbDeleteTask", id);
   },
-  addTask({ commit }, task) {
+  addTask({ dispatch }, task) {
     const task_id = uid();
     const payload = {
       id: task_id,
       task: task,
     };
     console.log(task);
-    commit("addTask", payload);
+    dispatch("fbAddTask", payload);
   },
   setSearch({ commit }, value) {
     commit("setSearch", value);
   },
   setSort({ commit }, value) {
     commit("setSort", value);
+  },
+  fbReadData({ commit }, value) {
+    console.log("redaing data from firebase");
+    // console.log(firebaseAuth.currentUser.uid);
+
+    let userId = firebaseAuth.currentUser.uid;
+    let userTasks = firebaseDb.ref("tasks/" + userId);
+    // console.log(userTasks);
+
+    // initial check for data
+    userTasks.once("value", (snapshot) => {
+      commit("setTaskDownloaded", true);
+    });
+    // child added
+    userTasks.on("child_added", (snapshot) => {
+      console.log(snapshot.val());
+      let task = snapshot.val();
+      let payload = {
+        id: snapshot.key,
+        task: task,
+      };
+      commit("addTask", payload);
+    });
+    // child changed
+    userTasks.on("child_changed", (snapshot) => {
+      console.log(snapshot.val());
+      let task = snapshot.val();
+      let payload = {
+        id: snapshot.key,
+        updates: task,
+      };
+      commit("updateTask", payload);
+    });
+    // child delele
+    userTasks.on("child_removed", (snapshot) => {
+      let taskId = snapshot.key;
+      commit("deleteTask", taskId);
+    });
+  },
+  fbAddTask({}, payload) {
+    let userId = firebaseAuth.currentUser.uid;
+    let taskRef = firebaseDb.ref("tasks/" + userId + "/" + payload.id);
+    taskRef.set(payload.task);
+    console.log(payload);
+  },
+  fbUpdateTask({}, payload) {
+    let userId = firebaseAuth.currentUser.uid;
+    let taskRef = firebaseDb.ref("tasks/" + userId + "/" + payload.id);
+    taskRef.update(payload.updates);
+    console.log(payload);
+  },
+  fbDeleteTask({}, taskId) {
+    let userId = firebaseAuth.currentUser.uid;
+    let taskRef = firebaseDb.ref("tasks/" + userId + "/" + taskId);
+    taskRef.remove();
   },
 };
 
