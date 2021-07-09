@@ -49,6 +49,7 @@ const actions = {
         dispatch("tasks/fbReadData", null, { root: true });
         this.$router.push("/");
       } else {
+        commit("tasks/clearTasks", null, { root: true });
         commit("tasks/setTaskDownloaded", false, { root: true });
         commit("setLoggedIn", false);
         // replace used for restrict to go back
