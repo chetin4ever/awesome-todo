@@ -137,7 +137,7 @@ const actions = {
   },
   fbAddTask({}, payload) {
     let userId = firebaseAuth.currentUser.uid;
-    userId = "qmavqNout9hKIB9vHyNv2ldPWnG2";
+    // userId = "qmavqNout9hKIB9vHyNv2ldPWnG2";
     let taskRef = firebaseDb.ref("tasks/" + userId + "/" + payload.id);
     taskRef.set(payload.task, (error) => {
       if (error) {
@@ -150,7 +150,7 @@ const actions = {
   },
   fbUpdateTask({}, payload) {
     let userId = firebaseAuth.currentUser.uid;
-    userId = "qmavqNout9hKIB9vHyNv2ldPWnG2";
+    // userId = "qmavqNout9hKIB9vHyNv2ldPWnG2";
 
     let taskRef = firebaseDb.ref("tasks/" + userId + "/" + payload.id);
     taskRef.update(payload.updates, (error) => {
@@ -167,7 +167,7 @@ const actions = {
   },
   fbDeleteTask({}, taskId) {
     let userId = firebaseAuth.currentUser.uid;
-    userId = "qmavqNout9hKIB9vHyNv2ldPWnG2";
+    // userId = "qmavqNout9hKIB9vHyNv2ldPWnG2";
 
     let taskRef = firebaseDb.ref("tasks/" + userId + "/" + taskId);
     taskRef.remove((error) => {

@@ -1,0 +1,13 @@
+{
+  "hosting": {
+    "site": "awesometodo-3ca1c",
+    "public": "dist/spa",
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
+  }
+}

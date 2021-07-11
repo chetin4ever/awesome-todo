@@ -1,6 +1,6 @@
 <template>
   <q-page padding class="q-pa-md">
-    <div class="q-pa-md absolute full-width full-height column">
+    <div class="q-pa-md absolute full-width full-height column fwidth">
       <template v-if="taskDownloaded">
         <div class="row q-mb-lg">
           <search />
@@ -99,4 +99,7 @@ export default {
   },
 };
 </script>
-  
+<style lang="sass" scoped>
+.fwidth
+  width: 96% !important
+</style>  
